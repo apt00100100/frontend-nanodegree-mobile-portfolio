@@ -383,7 +383,6 @@ var pizzaElementGenerator = function(i) {
     pizzaImageContainer.appendChild(pizzaImage);
     pizzaContainer.appendChild(pizzaImageContainer);
 
-
     pizzaDescriptionContainer.style.width="65%";
 
     pizzaName = document.createElement("h4");
@@ -402,7 +401,7 @@ var pizzaElementGenerator = function(i) {
 var resizePizzas = function(size) {
     window.performance.mark("mark_start_resize");   // User Timing API function
 
-    // Iterates through pizza elements on the page and changes their widths
+    // Called once to resize all pizza containers based on the selected size increment (small="1", medium="2", large="3")
     function changePizzaSizes(size) {
         var pizzaContainers = document.querySelectorAll(".randomPizzaContainer");
         var windowWidth = document.querySelector("#randomPizzas").offsetWidth;
@@ -410,15 +409,12 @@ var resizePizzas = function(size) {
 
         switch(size) {
             case "1":
-                // document.querySelector("#pizzaSize").innerHTML = "Small";
                 width = windowWidth * 0.25;
                 break;
             case "2":
-                // document.querySelector("#pizzaSize").innerHTML = "Medium";
                 width = windowWidth * 0.3333;
                 break;
             case "3":
-                // document.querySelector("#pizzaSize").innerHTML = "Large";
                 width = windowWidth * 0.5;
                 break;
             default:
@@ -477,8 +473,10 @@ function updatePositions() {
 
     var items = document.querySelectorAll('.mover');
     var scrollTop = document.body.scrollTop;
-    for (var i = 0; i < items.length; i++) {
-        var phase = Math.sin((scrollTop / 1250) + (i % 5));
+    var theta = scrollTop / 1250;
+    var i, n = items.length;
+    for (i = 0; i < n; i++) {
+        var phase = Math.sin(theta + (i % 5));
         items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
     }
 

@@ -8,11 +8,15 @@
   },
   "private": true,
   "devDependencies": {
-    "gulp": "3.9.1",
-    "gulp-minify": "1.0.0",
-    "gulp-clean-css": "3.9.0",
-    "gulp-htmlmin": "3.0.0",
+    "browser-sync": "^2.18.13",
     "del": "3.0.0",
+    "gulp": "3.9.1",
+    "gulp-clean-css": "3.9.0",
+    "gulp-exit": "0.0.2",
+    "gulp-htmlmin": "3.0.0",
+    "gulp-minify": "1.0.0",
+    "ngrok": "^2.2.22",
+    "psi": "^3.0.0",
     "run-sequence": "2.1.0"
   }
 }

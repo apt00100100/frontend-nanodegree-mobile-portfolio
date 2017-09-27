@@ -3,6 +3,9 @@
 // npm modules
 var del = require('del');
 var runSequence = require('run-sequence');
+var psi = require('psi');
+var ngrok = require('ngrok');
+var browserSync = require('browser-sync');
 
 // gulp modules
 var gulp = require('gulp');
@@ -10,13 +13,17 @@ var jsMinify = require('gulp-minify');
 var cssMinify = require('gulp-clean-css');
 var htmlMinify = require('gulp-htmlmin');
 
+// global constants
+var portVal = 3020;
+var site;
+
 /*********************************************************************************************************************
  * Public tasks: run these from the console eg. gulp start
  *********************************************************************************************************************/
 
 gulp.task('default', function (done) {
     runSequence(
-        'build.dist',
+        'psi',
         done
     );
 });
@@ -78,6 +85,62 @@ gulp.task('watch.src', function () {
         'src/**/*.css',
         'src/**/*.html'
     ], ['build.dist']);
+});
+
+/*********************************************************************************************************************
+ * Test the performance
+ *********************************************************************************************************************/
+
+gulp.task('browser-sync-psi', ['build.dist'], function() {
+    browserSync({
+        port: portVal,
+        open: false,
+        server: {
+            baseDir: 'dist/'
+        }
+    });
+});
+
+gulp.task('ngrok-url', function(cb) {
+    return ngrok.connect(portVal, function (err, url) {
+        site = url + '/index.html';
+        console.log('serving your tunnel from: ' + site);
+        cb();
+    });
+});
+
+gulp.task('psi-desktop', function () {
+    return psi(site, {
+        nokey: 'true',
+        strategy: 'desktop'
+    }).then(function (data) {
+        console.log('Speed score: ' + data.ruleGroups.SPEED.score);
+    });
+});
+
+gulp.task('psi-mobile', function () {
+    return psi(site, {
+        nokey: 'true',
+        strategy: 'mobile'
+    }).then(function (data) {
+        console.log('Speed score: ' + data.ruleGroups.SPEED.score);
+        console.log('Usability score: ' + data.ruleGroups.USABILITY.score);
+    });
+});
+
+gulp.task('psi-seq', function (cb) {
+    return runSequence(
+        'browser-sync-psi',
+        'ngrok-url',
+        'psi-desktop',
+        'psi-mobile',
+        cb
+    );
+});
+
+gulp.task('psi', ['psi-seq'], function() {
+    console.log('Check out your page speed scores!');
+    process.exit();
 });
 
 /*********************************************************************************************************************
