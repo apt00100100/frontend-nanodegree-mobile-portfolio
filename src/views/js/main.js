@@ -402,8 +402,8 @@ var pizzaElementGenerator = function(i) {
 var resizePizzas = function(size) {
     window.performance.mark("mark_start_resize");   // User Timing API function
 
-    var pizzaContainers = document.querySelectorAll(".randomPizzaContainer");
-    var windowWidth = document.querySelector("#randomPizzas").offsetWidth;
+    var pizzaContainers = document.getElementsByClassName('randomPizzaContainer');
+    var windowWidth = document.getElementById('randomPizzas').offsetWidth;
     var width = 0;
 
     switch(size) {
@@ -467,12 +467,13 @@ function updatePositions(evt) {
     frame++;
     window.performance.mark("mark_start_frame");
 
-    var items = document.querySelectorAll('.mover');
+    var items = document.getElementsByClassName('mover');
     var scrollTop = (evt && evt.target && evt.target.scrollingElement) ? evt.target.scrollingElement.scrollTop : 0;
     var theta = scrollTop / 1250;
     var i, n = items.length;
+    var phase;
     for (i = 0; i < n; i++) {
-        var phase = Math.sin(theta + (i % 5));
+        phase = Math.sin(theta + (i % 5));
         items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
     }
 
@@ -491,17 +492,20 @@ window.addEventListener('scroll', updatePositions);
 
 // Generates the sliding pizzas when the page loads.
 document.addEventListener('DOMContentLoaded', function() {
+    var movingPizzasElem = document.getElementById('movingPizzas1');
     var cols = 8;
-    var s = 256;
-    var movingPizzasElem = document.querySelector('#movingPizzas1');
-    for (var i = 0; i < 200; i++) {
-        var elem = document.createElement('img');
+    var width = window.screen.width / cols;
+    var height = window.screen.height / cols;
+    var i, n = cols * cols;
+    var elem;
+    for (i = 0; i < n; i++) {
+        elem = document.createElement('img');
         elem.className = 'mover';
         elem.src = "images/pizza.png";
         elem.style.height = "100px";
         elem.style.width = "73.333px";
-        elem.basicLeft = (i % cols) * s;
-        elem.style.top = (Math.floor(i / cols) * s) + 'px';
+        elem.basicLeft = (i % cols) * width;
+        elem.style.top = (Math.floor(i / cols) * height) + 'px';
         movingPizzasElem.appendChild(elem);
     }
     updatePositions();
