@@ -398,35 +398,31 @@ var pizzaElementGenerator = function(i) {
 };
 
 // resizePizzas(size) is called when the slider in the "Our Pizzas" section of the website moves.
+// Called once to resize all pizza containers based on the selected size increment (small="1", medium="2", large="3")
 var resizePizzas = function(size) {
     window.performance.mark("mark_start_resize");   // User Timing API function
 
-    // Called once to resize all pizza containers based on the selected size increment (small="1", medium="2", large="3")
-    function changePizzaSizes(size) {
-        var pizzaContainers = document.querySelectorAll(".randomPizzaContainer");
-        var windowWidth = document.querySelector("#randomPizzas").offsetWidth;
-        var width = 0;
+    var pizzaContainers = document.querySelectorAll(".randomPizzaContainer");
+    var windowWidth = document.querySelector("#randomPizzas").offsetWidth;
+    var width = 0;
 
-        switch(size) {
-            case "1":
-                width = windowWidth * 0.25;
-                break;
-            case "2":
-                width = windowWidth * 0.3333;
-                break;
-            case "3":
-                width = windowWidth * 0.5;
-                break;
-            default:
-                console.log("invalid size selected");
-        }
-
-        for (var i = 0; i < pizzaContainers.length; i++) {
-            pizzaContainers[i].style.width = width + 'px';
-        }
+    switch(size) {
+        case "1":
+            width = windowWidth * 0.25;
+            break;
+        case "2":
+            width = windowWidth * 0.3333;
+            break;
+        case "3":
+            width = windowWidth * 0.5;
+            break;
+        default:
+            console.log("invalid size selected");
     }
 
-    changePizzaSizes(size);
+    for (var i = 0; i < pizzaContainers.length; i++) {
+        pizzaContainers[i].style.width = width + 'px';
+    }
 
     // User Timing API is awesome
     window.performance.mark("mark_end_resize");
@@ -467,12 +463,12 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 // https://www.igvita.com/slides/2012/devtools-tips-and-tricks/jank-demo.html
 
 // Moves the sliding background pizzas based on scroll position
-function updatePositions() {
+function updatePositions(evt) {
     frame++;
     window.performance.mark("mark_start_frame");
 
     var items = document.querySelectorAll('.mover');
-    var scrollTop = document.body.scrollTop;
+    var scrollTop = (evt && evt.target && evt.target.scrollingElement) ? evt.target.scrollingElement.scrollTop : 0;
     var theta = scrollTop / 1250;
     var i, n = items.length;
     for (i = 0; i < n; i++) {
