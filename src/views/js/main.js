@@ -404,17 +404,21 @@ var resizePizzas = function(size) {
 
     var pizzaContainers = document.getElementsByClassName('randomPizzaContainer');
     var windowWidth = document.getElementById('randomPizzas').offsetWidth;
+    var pizzaSize = document.getElementById('pizzaSize');
     var width = 0;
 
     switch(size) {
         case "1":
             width = windowWidth * 0.25;
+            pizzaSize.textContent = 'Small';
             break;
         case "2":
             width = windowWidth * 0.3333;
+            pizzaSize.textContent = 'Medium';
             break;
         case "3":
             width = windowWidth * 0.5;
+            pizzaSize.textContent = 'Large';
             break;
         default:
             console.log("invalid size selected");
@@ -494,8 +498,7 @@ window.addEventListener('scroll', updatePositions);
 document.addEventListener('DOMContentLoaded', function() {
     var movingPizzasElem = document.getElementById('movingPizzas1');
     var cols = 8;
-    var width = window.screen.width / cols;
-    var height = window.screen.height / cols;
+    var s = 256;
     var i, n = cols * cols;
     var elem;
     for (i = 0; i < n; i++) {
@@ -504,8 +507,8 @@ document.addEventListener('DOMContentLoaded', function() {
         elem.src = "images/pizza.png";
         elem.style.height = "100px";
         elem.style.width = "73.333px";
-        elem.basicLeft = (i % cols) * width;
-        elem.style.top = (Math.floor(i / cols) * height) + 'px';
+        elem.basicLeft = (i % cols) * s;
+        elem.style.top = (Math.floor(i / cols) * s) + 'px';
         movingPizzasElem.appendChild(elem);
     }
     updatePositions();
