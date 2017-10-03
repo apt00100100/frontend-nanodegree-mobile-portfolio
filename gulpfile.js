@@ -21,11 +21,8 @@ var site;
  * Public tasks: run these from the console eg. gulp start
  *********************************************************************************************************************/
 
-gulp.task('default', function (done) {
-    runSequence(
-        'psi',
-        done
-    );
+gulp.task('default', ['psi'], function () {
+    process.exit();
 });
 
 gulp.task('start', ['build.dist', 'watch.src']);
@@ -91,7 +88,7 @@ gulp.task('watch.src', function () {
  * Test the performance
  *********************************************************************************************************************/
 
-gulp.task('browser-sync-psi', ['build.dist'], function() {
+gulp.task('browser-sync-psi', function() {
     browserSync({
         port: portVal,
         open: false,
@@ -101,11 +98,11 @@ gulp.task('browser-sync-psi', ['build.dist'], function() {
     });
 });
 
-gulp.task('ngrok-url', function(cb) {
+gulp.task('ngrok-url', function(done) {
     return ngrok.connect(portVal, function (err, url) {
         site = url + '/index.html';
         console.log('serving your tunnel from: ' + site);
-        cb();
+        done();
     });
 });
 
@@ -128,19 +125,15 @@ gulp.task('psi-mobile', function () {
     });
 });
 
-gulp.task('psi-seq', function (cb) {
-    return runSequence(
+gulp.task('psi', function (done) {
+    runSequence(
+        'build.dist',
         'browser-sync-psi',
         'ngrok-url',
         'psi-desktop',
         'psi-mobile',
-        cb
+        done
     );
-});
-
-gulp.task('psi', ['psi-seq'], function() {
-    console.log('Check out your page speed scores!');
-    process.exit();
 });
 
 /*********************************************************************************************************************
